@@ -1,0 +1,35 @@
+name: Daily Scanner
+
+on:
+  schedule:
+    - cron: "30 13 * * *"   # 14:30 Portugal (UTC+1 inverno ajustar se necessário)
+  workflow_dispatch:
+
+jobs:
+  run-scanner:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run daily scanner
+        run: |
+          python run_daily.py
+
+      - name: Commit snapshot
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/*.csv
+          git commit -m "Daily snapshot"
+          git push
