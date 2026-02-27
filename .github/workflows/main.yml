@@ -30,6 +30,6 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add data/*.csv
-          git commit -m "Daily snapshot"
-          git push
+          git add data/*.csv || true
+          git diff --cached --quiet || git commit -m "Daily snapshot"
+          git push || true
